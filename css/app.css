@@ -16,14 +16,14 @@
     padding: 0; margin: 0;
 }
 
-canvas {
+/* canvas {
     background: #eee; 
     display: block; 
     margin: 0 auto;
     border: 3px solid #0095DD;
     border-radius: 3px;
     box-shadow: 2px 2px 2px grey;
-}
+} */
 
 .header {
     margin: 0 auto;

@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Game</title>
-        <!--<link rel="stylesheet" type="text/css" href="css/app.css" />-->
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
         <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="js/phaser.min.js"></script>
@@ -22,6 +22,42 @@
     </head>
     <body>
     
+
+         <!--Congrats Modal Start-->
+         <div id="con-modal" class="con-modal">
+
+            <div class="con-modal-content" id="con-modal-content">
+        
+                <div class="con-modal-header">
+        
+                    <span class="close" onclick="closeCongratsModal();">&times;</span>
+        
+                    <h1>Congratulations, you have beat the game!!</h2>
+        
+                  </div>
+        
+                  <div class="con-modal-body">
+        
+                    <h2>Enter your name to save it to the leaderboard!</h2>
+        
+                    <form action="#">
+        
+                        <input type="text" name="name" id="name" />
+        
+                    </form>
+        
+                  </div>
+        
+                  <div class="con-modal-footer">
+        
+                    <button type="submit" onclick="saveResult();">Save</button>
+        
+                  </div>
+            </div>
+            
+        </div>
+        <!--Congrats Modal End-->
+
        <script>
            
            //Instantiating the canvas
@@ -173,8 +209,9 @@
 
                if(score === brickInfo.count.row*brickInfo.count.col*10) {
 
-                    alert('You won the game, congratulations!');
-                    location.reload();
+                    playing = false;
+                    displayCongratsModal();
+                    
 
                 }
            }
@@ -217,6 +254,49 @@
             ball.body.velocity.set(150, -150);
             playing = true;
 
+        }
+
+        function displayCongratsModal() {
+
+            playing = false;
+            document.getElementById("con-modal").style.display = "block";
+
+        }
+        function closeCongratsModal() {
+            
+            document.getElementById("con-modal").style.display = "none";
+            displayResults();
+            document.location.reload();
+
+        }
+        function displayResults() {
+
+            $.get("php/displayResults.php", function(data){
+
+                var table = document.getElementById("table");
+                table.innerHTML = data;
+
+            });
+        }
+        //AJAX Request
+        function saveResult() {
+
+        var name = document.getElementById("name").value;
+        
+        $.post("php/saveResults.php",
+        {
+
+            name: name,
+            score: score
+
+        },
+            function(data, status){
+
+            //alert("Data: " + data);
+
+        });
+        closeCongratsModal();
+        
         }
 
        </script>
