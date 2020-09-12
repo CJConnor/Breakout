@@ -1,8 +1,8 @@
 <?php
     
-    include_once"dbconnect.php";
+    include_once "dbconnect.php";
 
-    $sql = "SELECT * FROM breakout_leaderboard ORDER BY score DESC";
+    $sql = "SELECT * FROM leaderboard ORDER BY score DESC";
     $result = DB::getCon()->query($sql);
     $count = $result->num_rows;
     $html = "";

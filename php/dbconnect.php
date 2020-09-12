@@ -10,7 +10,7 @@ class DB {
     $servername = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "games";
+    $dbname = "breakout";
 
     self::$con = new mysqli($servername, $username, $password, $dbname);
   }

@@ -26,13 +26,7 @@ canvas {
 }
 
 .header {
-    margin: 0 auto;
-    text-align: center;
-    width: 33%;
-    padding: 30px;
     font-family: 'Righteous', cursive;
-    font-size: 24px;
-    text-shadow: 1px 1px 1px grey;
 }
 
 .content {
@@ -50,8 +44,7 @@ canvas {
     text-align: center;
 }
 
-.canvasDiv {
-    text-align: center;
+.gameDiv {
     font-family: 'Righteous', cursive;
 }
 
