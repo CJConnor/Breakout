@@ -13,7 +13,7 @@ class Paddle {
      * @param canvas
      */
     constructor(canvas) {
-        this.paddleX = (canvas.width - this.paddleWidth/2)
+        this.paddleX = (canvas.width - this.paddleWidth)/2;
     }
 
     /**
