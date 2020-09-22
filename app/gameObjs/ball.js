@@ -1,9 +1,23 @@
+export {Ball}
+
+/**
+ * Ball class
+ */
 class Ball {
 
+    /**
+     * Ball constructor
+     */
     constructor() {
         this.ballRadius = 10;
     }
 
+    /**
+     * Draws the ball to the canvas
+     * @param ctx | canvas
+     * @param x | integer
+     * @param y | integer
+     */
     draw(ctx, x, y) {
 
         ctx.beginPath();

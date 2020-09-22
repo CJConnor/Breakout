@@ -1,11 +1,22 @@
+export {Lives}
+
+/**
+Live class
+ */
 class Lives {
 
     lives = 3;
 
-    constructor() {
-        this.lives = this.lives;
-    }
+    /**
+     * Lives Constructor
+     */
+    constructor() {}
 
+    /**
+     * Draws the lives to the canvas
+     * @param ctx | canvas
+     * @param cWidth | integer
+     */
     draw(ctx, cWidth) {
 
         ctx.font = "16px Arial";

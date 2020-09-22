@@ -1,11 +1,31 @@
+import {Input} from './input.js';
+
+import {BlueBrick} from './gameObjs/bricks/blueBrick.js'
+import {GreenBrick} from './gameObjs/bricks/greenBrick.js'
+import {RedBrick} from './gameObjs/bricks/redBrick.js'
+import {Bricks} from './gameObjs/bricks.js';
+import {Ball} from './gameObjs/ball.js';
+import {Paddle} from './gameObjs/paddle.js';
+import {Score} from './gameObjs/score.js';
+import {Lives} from './gameObjs/lives.js';
+import {Modal} from './gameObjs/modal.js';
+
+/**
+ * Canvas Game engine
+ */
 class CVS {
 
+    /**
+     * CVS Object Constructor
+     */
     constructor() {
-        
+
+        // Instantiates canvas
         this.canvas = document.getElementById("myCanvas");
         this.ctx    = this.canvas.getContext('2d');
 
-        this.input  = new Input(document);
+        // Instantiates game objects
+        this.input  = new Input(document, this);
         this.bricks = new Bricks();
         this.ball   = new Ball();
         this.paddle = new Paddle(this.canvas);
@@ -13,37 +33,32 @@ class CVS {
         this.lives  = new Lives();
         this.modal  = new Modal(document);
 
+        // Calls results
         this.modal.displayResults();
 
-        this.x  = this.canvas.width / 2;
-        this.y  = this.canvas.height - 30;
-        this.dx = 2;
-        this.dy = -2;
+        // Sets games values
+        this.x        = this.canvas.width / 2;
+        this.y        = this.canvas.height - 30;
+        this.dx       = 2;
+        this.dy       = -2;
 
-        this.gameStop = true;
-
-        this.modal.save.addEventListener('click', () => { this.modal.saveResult(this.score.score) });
-        
+        // Looks out for loading event listener to update the canvas
         window.addEventListener('load', () => { this.update(); });
 
-        document.addEventListener("keypress", (e) => {
-
-            if (e.keyCode == 32 && this.gameStop === true) {
-              this.gameStop = false;
-            } else if (e.keyCode == 32 && this.gameStop === false) {
-              this.gameStop = true;
-            }
-
+        if (this.input.checkPaused() === false)
             this.update();
-
-        });
 
     }
 
+    /**
+     * Update method to update the canvas
+     */
     update() {
 
+        // Clears existing canvas
         this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.height);
 
+        // Draws Objects to the canvas
         this.bricks.draw(this.ctx);
         this.ball.draw(this.ctx, this.x, this.y);
         this.paddle.draw(this.ctx, this.canvas.height);
@@ -75,8 +90,8 @@ class CVS {
                 this.lives.lives--;
 
                 if(this.lives.lives === 0) {
-                    alert("Game Over");
-                    document.location.reload();
+                    this.modal.displayGameOverModal(this.score.score);
+                    this.input.gameStop = true;
                 } else {
                     this.x              = this.canvas.width/2;
                     this.y              = this.canvas.height - 30;
@@ -97,34 +112,44 @@ class CVS {
         }
 
         //Animates the game
-        if(this.gameStop == false) {
+        if(this.input.checkPaused() === false) {
             requestAnimationFrame(() => { this.update(); });
         }
 
     }
 
+    /**
+     * Detects collision between the ball and the bricks
+     */
     collisionDetection() {
 
-        for( var c = 0; c < this.bricks.brickColumnCount; c++) {
+        // Loop through brick columns
+        for ( let c = 0; c < this.bricks.brickColumnCount; c++) {
 
-            for(var r = 0; r < this.bricks.brickRowCount; r++) {
+            // Loop through brick rows
+            for (let r = 0; r < this.bricks.brickRowCount; r++) {
 
-                var b = this.bricks.bricks[c][r];
+                if (this.bricks.bricks[c][r].status === 1) {
 
-                if(b.status == 1) {
-
-                    if(this.x > b.x && this.x < b.x + this.bricks.brickWidth && this.y > b.y && this.y < b.y + this.bricks.brickHeight) {
+                    if (this.x > this.bricks.bricks[c][r].x && this.x < this.bricks.bricks[c][r].x + this.bricks.brickWidth && this.y > this.bricks.bricks[c][r].y && this.y < this.bricks.bricks[c][r].y + this.bricks.brickHeight) {
 
                         this.dy  = -this.dy;
-                        b.status = 0;
 
-                        this.score.score++;
+                        this.bricks.bricks[c][r].hp--;
 
-                        if (this.score.score == this.bricks.brickRowCount * this.bricks.brickColumnCount) {
+                        // If the brick has no HP remove it and add the score
+                        if (this.bricks.bricks[c][r].hp === 0) {
+                            this.bricks.bricks[c][r].status = 0;
 
-                            this.gameStop = true;
-                            this.modal.displayCongratsModal();
+                            this.score.score += this.bricks.bricks[c][r].score;
 
+                            // If there is no more bricks then stop the game.
+                            if (this.bricks.brickCounts() === 0) {
+
+                                this.input.gameStop = true;
+                                this.modal.displayCongratsModal(this.score.score);
+
+                            }
                         }
 
                     }
@@ -148,4 +173,4 @@ class CVS {
     window.requestAnimationFrame = requestAnimationFrame;
   
     let cvs = new CVS();
-  })()
+  })();
