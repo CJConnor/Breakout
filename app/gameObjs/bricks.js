@@ -11,11 +11,11 @@ class Bricks {
     // Bricks properties
     brickRowCount    = 8;
     brickColumnCount = 10;
-    brickWidth       = 40;
+    brickWidth       = 38;
     brickHeight      = 10;
     brickPadding     = 5;
     brickOffsetTop   = 30;
-    brickOffsetLeft  = 15;
+    brickOffsetLeft  = 25;
     brickCount       = 0;
     bricks           = [];
 

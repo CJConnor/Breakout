@@ -34,7 +34,7 @@ class Modal {
         formData.append('name', name);
         formData.append('score', score);
 
-        fetch(`php/saveResults.php`, {method: 'post', body: formData})
+        fetch(`act/saveResults.php`, {method: 'post', body: formData})
             .then((response) => (response.text()))
             .then((html) => {
                 if (html.includes('success')) {
@@ -51,9 +51,11 @@ class Modal {
      */
     addModalFunctionality(score) {
 
+        console.log(this.docBody.getElementById("save"));
+
         this.docBody.getElementById("save").addEventListener('click', () => { this.saveResults(score) });
 
-        for (let item of this.docBody.getElementsByClassName("close")) {
+        for (let item of this.docBody.getElementsByClassName("c")) {
             item.addEventListener('click', () => { this.closeModals() })
         }
 
@@ -71,6 +73,7 @@ class Modal {
                 json = JSON.parse(json);
 
                 this.modal.innerHTML = json['gameOver'];
+
 
                 this.addModalFunctionality(score);
 
@@ -112,9 +115,19 @@ class Modal {
 
         let table = this.docBody.getElementById("table");
 
-        fetch(`php/displayResults.php`, {method: 'get'})
+        fetch(`_assets/json/leaderboard.json`, {method: 'get'})
             .then((response) => response.text())
-            .then((html) => {
+            .then((json) => {
+
+                json = JSON.parse(json);
+
+                let leaderboard = json.leaderboard;
+                let html        = ``;
+
+                for (let i = 0; i < leaderboard.length; i++) {
+                    html += `<tr><td>${leaderboard[i].name}</td><td>${leaderboard[i].score}</td></tr>`;
+                }
+
                 table.innerHTML = html;
             });
 

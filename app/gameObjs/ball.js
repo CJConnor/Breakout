@@ -9,7 +9,7 @@ class Ball {
      * Ball constructor
      */
     constructor() {
-        this.ballRadius = 10;
+        this.ballRadius = 8;
     }
 
     /**

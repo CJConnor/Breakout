@@ -136,6 +136,7 @@ class CVS {
                         this.dy  = -this.dy;
 
                         this.bricks.bricks[c][r].hp--;
+                        this.score.score++;
 
                         // If the brick has no HP remove it and add the score
                         if (this.bricks.bricks[c][r].hp === 0) {
@@ -145,6 +146,8 @@ class CVS {
 
                             // If there is no more bricks then stop the game.
                             if (this.bricks.brickCounts() === 0) {
+
+                                this.score.score += this.lives.lives * 5;
 
                                 this.input.gameStop = true;
                                 this.modal.displayCongratsModal(this.score.score);
