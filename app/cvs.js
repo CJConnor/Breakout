@@ -71,19 +71,19 @@ class CVS {
 
         //Makes sure the ball bounces off canvas walls
         if (this.x + this.dx > this.canvas.width - this.ball.ballRadius || this.x + this.dx < this.ball.ballRadius) {
-            this.dx = -this.dx;
+            this.trajectoryChange("1");
         }
 
         //Makes sure the ball bounces off the ceiling and takes a life if it hits the floor
         if (this.y + this.dy < this.ball.ballRadius) {
 
-            this.dy = -this.dy;
+                this.trajectoryChange("2");
 
         } else if(this.y + this.dy > this.canvas.height - this.ball.ballRadius) {
 
             if(this.x > this.paddle.paddleX && this.x < this.paddle.paddleX + this.paddle.paddleWidth) {
 
-                this.dy = -this.dy;
+                this.trajectoryChange("2");
 
             } else {
 
@@ -104,6 +104,7 @@ class CVS {
 
         }
 
+
         //Moves Paddle Based on arrow keys
         if (this.input.rightPressed && this.paddle.paddleX < this.canvas.width - this.paddle.paddleWidth) {
             this.paddle.paddleX += 7;
@@ -115,6 +116,60 @@ class CVS {
         if(this.input.checkPaused() === false) {
             requestAnimationFrame(() => { this.update(); });
         }
+
+    }
+
+    /**
+     * Calculates random numbers
+     * @param {int} min 
+     * @param {int} max 
+     * @param {int} precision 
+     */
+    genRandNumber(min, max, precision) {
+        return (Math.floor(Math.random() * (max - min) ) + min) / precision;
+    }
+
+    /**
+     * Calculates the calls path
+     * @param {int} type - 1 is x-axis 2 is y-axis
+     */
+    trajectoryChange(type) {
+
+        let speed = 3;
+
+        let xSign = Math.sign(this.dx);
+        let ySign = Math.sign(this.dy);
+        let angle = Math.atan2(this.dx, this.dy) * this.genRandNumber(95, 105, 100);
+
+        this.dx = Math.cos(angle);
+        this.dy = Math.sin(angle);
+
+        // Walls
+        if (type == 1) {
+
+            if (xSign === Math.sign(this.dx)) {
+                this.dx *= -1;
+            }
+
+            if (ySign != Math.sign(this.dy)) {
+                this.dy *= -1;
+            }
+
+        // Ceilings and Paddle
+        } else if (type == 2) {
+
+            if (xSign != Math.sign(this.dx)) {
+                this.dx *= -1;
+            }
+
+            if (ySign === Math.sign(this.dy)) {
+                this.dy *= -1;
+            }
+
+        }
+
+        this.dx *= speed;
+        this.dy *= speed;
 
     }
 
@@ -131,9 +186,9 @@ class CVS {
 
                 if (this.bricks.bricks[c][r].status === 1) {
 
-                    if (this.x > this.bricks.bricks[c][r].x && this.x < this.bricks.bricks[c][r].x + this.bricks.brickWidth && this.y > this.bricks.bricks[c][r].y && this.y < this.bricks.bricks[c][r].y + this.bricks.brickHeight) {
+                    if (this.x > this.bricks.bricks[c][r].x && this.x < this.bricks.bricks[c][r].x + this.bricks.brickWidth + this.ball.ballRadius && this.y > this.bricks.bricks[c][r].y && this.y < this.bricks.bricks[c][r].y + this.bricks.brickHeight + this.ball.ballRadius) {
 
-                        this.dy  = -this.dy;
+                        this.trajectoryChange("2");
 
                         this.bricks.bricks[c][r].hp--;
                         this.score.score++;
